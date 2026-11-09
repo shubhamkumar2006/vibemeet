@@ -15,12 +15,19 @@ export type UserSession = {
   expiresAt: number;
 };
 
+const DEV_SESSION_SECRET = "dev-session-secret-change-me";
+
 function getSecret() {
-  const secret = process.env.SESSION_SECRET;
-  if (!secret) {
-    throw new Error("Authentication is not configured. Add SESSION_SECRET.");
+  const secret = process.env.SESSION_SECRET?.trim();
+  if (secret) {
+    return secret;
   }
-  return secret;
+
+  if (process.env.NODE_ENV !== "production") {
+    return DEV_SESSION_SECRET;
+  }
+
+  throw new Error("Authentication is not configured. Add SESSION_SECRET.");
 }
 
 function sign(payload: string): string {
@@ -149,4 +156,3 @@ export async function ensureUserInDb(user: {
     console.warn("Error ensuring user exists in DB:", err);
   }
 }
-

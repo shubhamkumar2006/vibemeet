@@ -46,7 +46,7 @@ The browser joins LiveKit directly after the server validates the room and creat
    npm install
    ```
 
-2. Copy `.env.example` to `.env.local` and fill in the values below. Create a random `SESSION_SECRET` (at least 32 random bytes); keep all secrets server-side.
+2. Copy `.env.example` to `.env.local` and fill in the values below. Create a random `SESSION_SECRET` (at least 32 random bytes); keep all secrets server-side. In local development, the app falls back to a non-production dev secret if `SESSION_SECRET` is omitted so the UI can boot and you can test flows before wiring env vars.
 
 3. In the Supabase SQL Editor, run [`supabase/migrations/20261107000000_initial_schema.sql`](./supabase/migrations/20261107000000_initial_schema.sql). It creates the tables, indexes, RLS restrictions, and atomic rate-limit function used by the app.
 
@@ -62,15 +62,15 @@ The browser joins LiveKit directly after the server validates the room and creat
 
 ## Environment variables
 
-| Variable                    | Required | Purpose                                                                                                  |
-| --------------------------- | -------- | -------------------------------------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_SUPABASE_URL`  | Yes      | Supabase project URL                                                                                     |
-| `SUPABASE_SERVICE_ROLE_KEY` | Yes      | Server-only database access; never expose to a client                                                    |
-| `SESSION_SECRET`            | Yes      | Signs guest-session cookies and pseudonymizes rate-limit keys                                            |
-| `LIVEKIT_URL`               | Yes      | LiveKit WebSocket URL used by browsers, typically `wss://...`                                            |
-| `LIVEKIT_API_KEY`           | Yes      | Server-only LiveKit API key                                                                              |
-| `LIVEKIT_API_SECRET`        | Yes      | Server-only LiveKit API secret                                                                           |
-| `LIVEKIT_API_URL`           | Optional | HTTPS LiveKit server URL for administrative room controls; defaults to converting `LIVEKIT_URL` to HTTPS |
+| Variable                    | Required                                   | Purpose                                                                                                  |
+| --------------------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`  | Yes                                        | Supabase project URL                                                                                     |
+| `SUPABASE_SERVICE_ROLE_KEY` | Yes                                        | Server-only database access; never expose to a client                                                    |
+| `SESSION_SECRET`            | Local dev fallback; required in production | Signs guest-session cookies and pseudonymizes rate-limit keys                                            |
+| `LIVEKIT_URL`               | Yes                                        | LiveKit WebSocket URL used by browsers, typically `wss://...`                                            |
+| `LIVEKIT_API_KEY`           | Yes                                        | Server-only LiveKit API key                                                                              |
+| `LIVEKIT_API_SECRET`        | Yes                                        | Server-only LiveKit API secret                                                                           |
+| `LIVEKIT_API_URL`           | Optional                                   | HTTPS LiveKit server URL for administrative room controls; defaults to converting `LIVEKIT_URL` to HTTPS |
 
 ## Authentication and user identity
 

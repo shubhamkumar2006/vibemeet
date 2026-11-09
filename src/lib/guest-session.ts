@@ -11,11 +11,21 @@ export type GuestSession = {
   expiresAt: number;
 };
 
+const DEV_SESSION_SECRET = "dev-session-secret-change-me";
+
 function sign(payload: string) {
-  const secret = process.env.SESSION_SECRET;
-  if (!secret)
-    throw new Error("Guest sessions are not configured. Add SESSION_SECRET.");
-  return createHmac("sha256", secret).update(payload).digest("base64url");
+  const secret = process.env.SESSION_SECRET?.trim();
+  if (secret) {
+    return createHmac("sha256", secret).update(payload).digest("base64url");
+  }
+
+  if (process.env.NODE_ENV !== "production") {
+    return createHmac("sha256", DEV_SESSION_SECRET)
+      .update(payload)
+      .digest("base64url");
+  }
+
+  throw new Error("Guest sessions are not configured. Add SESSION_SECRET.");
 }
 
 export function createGuestSession(displayName: string): GuestSession {
